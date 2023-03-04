@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style>
+    .chartist-tooltip {
+  opacity: 0;
+  position: absolute;
+  margin: 20px 0 0 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.chartist-tooltip.tooltip-show {
+  opacity: 1;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+</head>
+<body>
+    <form method="post">
+        <label for="firstname">Search keyword:</label>
+        <input type="text" id="firstname" name="fname" placeholder="firstname" value="{{ request.form['fname'] }}">
+        <button type="submit" id="retrieve" onclick="change_image()">Login</button>
+        <br>
+    </form>
+    <p>{{ todo }}</p>
+<img src="" id="word_length_vs_ups">
+<img src="" id="weighted_keyword">
+<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+	<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+<div id="chart"></div>
+</body>
+<script>
+    $(document).ready(function() {
+
+$('form').on('submit', function(event) {
+
+    $.ajax({
+        data : {
+            name : $('#firstname').val(),
+        },
+        type : 'POST',
+        url : '/process'
+    })
+    .done(function(data) {
+
+        if (data.error) {
+            $('#errorAlert').text(data.error).show();
+            $('#successAlert').hide();
+        }
+        else {
+            $('#successAlert').text(data.name).show();
+            $('#errorAlert').text(data.val).show();
+            name = data.name
+            values = data.val
+            a = values.split(" ")
+            numberArray = [];
+            for (var i = 0; i < a.length; i++)
+  
+
+                numberArray.push(parseInt(a[i]));
+            console.log(a);
+            var data = {
+                labels: name.split(" "),
+                series: [
+    values.split(" ")
+  ],
+            };
+            var options = {
+                width:1600,
+                height:600
+            }
+            myChart = new Chartist.Bar('#chart',data,options)
+            //$('#errorAlert').hide();
+        }
+
+    });
+
+    event.preventDefault();
+
+});
+
+});
+
+
+</script>
+</html>
